@@ -1,6 +1,7 @@
 #!/usr/bin/env python
 
 import random
+import os
 
 class SecretSanta:
 
@@ -8,7 +9,8 @@ class SecretSanta:
     self.generate()
     self.reveal()
     self.showResults()
-    print("\n\n")
+    print("\n")
+    save()
 
   def devPlay(self):
     self.generate()
@@ -18,6 +20,33 @@ class SecretSanta:
     for i in range(self.playerCount):
       print "Player {} got #{} and is buying for #{}".format(str(i+1).ljust(2), self.isSelfList[i], self.isBuyingForList[i])
     print
+
+    self.save()
+
+  def save(self):
+    from time import strftime
+    datetime = strftime("%Y-%m-%d-%H-%M-%S")
+
+    choice = raw_input("Do you wish to save these results? (y/N) : ")
+    if choice.lower() in ['y', 'yes']:
+      if not os.path.exists("saved_games"):
+        os.mkdir("saved_games")
+
+      fileName = raw_input("Name of file (default is current datetime) : ")
+
+      if fileName:
+        filePath = os.path.join("saved_games", fileName)
+        if os.path.isfile(filePath):
+          filePath = filePath + datetime
+      else:
+        filePath = datetime
+
+      results = sorted(zip(self.isSelfList, self.isBuyingForList))
+      resultString = "\n".join(["# IS BUYING FOR #"] + ["{} -----------  {}".format(str(pair[0]).ljust(2), pair[1]) for pair in results])
+
+      f = open(os.path.join("saved_games", filePath), 'w')
+      f.write(resultString)
+      f.close()
 
   def __init__(self, playerCount=None):
     self.__isSelfList = []
