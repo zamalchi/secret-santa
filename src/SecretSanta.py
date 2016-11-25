@@ -28,21 +28,25 @@ class SecretSanta:
     self.save()
     #### #### ####
 
-  def save(self):
+  def save(self, file=None):
     from time import strftime
     datetime = strftime("%Y-%m-%d-%H-%M-%S")
 
-    choice = raw_input("Do you wish to save these results? (y/N) : ")
-    if choice.lower() in ['y', 'yes']:
-      if not os.path.exists("saved_games"):
-        os.mkdir("saved_games")
+    if not os.path.exists("saved_games"):
+      os.mkdir("saved_games")
 
-      fileName = raw_input("Name of file (default is current datetime) : ")
+    fileName = ""
+    if file == None:
+      choice = raw_input("Do you wish to save these results? (y/N) : ")
+      if choice.lower() in ['y', 'yes']:
+        fileName = raw_input("Name of file (default is current datetime) : ")
+    else:
+      fileName == file
 
-      if fileName:
-        filePath = os.path.join("saved_games", fileName)
-        if os.path.isfile(filePath):
-          filePath = filePath + datetime
+    if fileName:
+      filePath = os.path.join("saved_games", fileName)
+      if os.path.isfile(filePath):
+        filePath = filePath + datetime
       else:
         filePath = datetime
 
